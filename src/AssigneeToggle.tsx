@@ -1,3 +1,5 @@
+import { useTeamStore } from './store';
+
 const TEAM_MEMBERS = ['Alice', 'Bob', 'Charlie'];
 
 const teamColors: Record<string, string> = {
@@ -6,13 +8,10 @@ const teamColors: Record<string, string> = {
     Charlie : '#22c55e'
 };
 
-const AssigneeToggle = ({
-    selectedMembers,
-    onToggleMember
-}: {
-  selectedMembers: string[];
-  onToggleMember: (name: string) => void;
-}) => {
+const AssigneeToggle = () => {
+    const selectedMembers = useTeamStore((state) => state.selectedMembers);
+    const toggleMember = useTeamStore((state) => state.toggleMember);
+
     return (
         <div style={{ padding : '16px', borderBottom : '1px solid #e2e8f0' }}>
             <h3 style={{ margin : '0 0 8px 0', fontSize : '0.9em', color : '#64748b' }}>
@@ -24,7 +23,7 @@ const AssigneeToggle = ({
                     return (
                         <button
                             key={name}
-                            onClick={() => onToggleMember(name)}
+                            onClick={() => toggleMember(name)}
                             style={{
                                 backgroundColor : isSelected ? teamColors[name] : '#f1f5f9',
                                 color           : isSelected ? '#fff' : '#475569',

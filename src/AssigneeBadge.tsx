@@ -1,16 +1,13 @@
+import { useTeamStore } from './store';
+
 const teamColors: Record<string, string> = {
     Alice   : '#6366f1',
     Bob     : '#f59e0b',
     Charlie : '#22c55e'
 };
 
-const AssigneeBadge = ({
-    assignee,
-    selectedMembers
-}: {
-  assignee: string;
-  selectedMembers: string[];
-}) => {
+const AssigneeBadge = ({ assignee }: { assignee: string }) => {
+    const selectedMembers = useTeamStore((state) => state.selectedMembers);
     const isSelected = selectedMembers.includes(assignee);
 
     return (

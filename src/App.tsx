@@ -1,4 +1,4 @@
-import { type FunctionComponent, useCallback, useRef, useState } from 'react';
+import { type FunctionComponent, useRef, useState } from 'react';
 import { BryntumGantt, type BryntumGanttProps } from '@bryntum/gantt-react';
 import CustomTaskModel from './lib/CustomTaskModel';
 import AssigneeBadge from './AssigneeBadge';
@@ -7,19 +7,7 @@ import './App.css';
 
 const App: FunctionComponent = () => {
     const gantt = useRef<BryntumGantt>(null);
-    const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
 
-    const toggleMember = useCallback((name: string) => {
-        setSelectedMembers((prev) =>
-            prev.includes(name) ? prev.filter((m) => m !== name) : [...prev, name]
-        );
-    }, []);
-
-    // The gantt config is created once via useState.
-    // The renderer captures the initial selectedMembers value ([]).
-    // When selectedMembers changes in the dashboard, the renderer
-    // is NOT re-executed by Bryntum — so AssigneeBadge always
-    // receives the stale initial value.
     const [ganttProps] = useState<BryntumGanttProps>({
         startDate  : new Date(2026, 10, 1),
         endDate    : new Date(2026, 11, 1),
@@ -35,12 +23,7 @@ const App: FunctionComponent = () => {
                 renderer : ({ record }: { record: { get: (field: string) => string } }) => {
                     const assignee = record.get('assignee');
                     if (!assignee) return null;
-                    return (
-                        <AssigneeBadge
-                            assignee={assignee}
-                            selectedMembers={selectedMembers}
-                        />
-                    );
+                    return <AssigneeBadge assignee={assignee} />;
                 }
             }
         ],
@@ -59,10 +42,7 @@ const App: FunctionComponent = () => {
 
     return (
         <div style={{ display : 'flex', flexDirection : 'column', height : '100vh' }}>
-            <AssigneeToggle
-                selectedMembers={selectedMembers}
-                onToggleMember={toggleMember}
-            />
+            <AssigneeToggle />
             <div style={{ flex : 1 }}>
                 <BryntumGantt ref={gantt} {...ganttProps} />
             </div>
